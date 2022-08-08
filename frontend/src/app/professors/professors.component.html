@@ -1,0 +1,67 @@
+<div *ngIf="selectedProfessor">
+  <div class="row">
+    <div class="col">
+      <app-title [title]="'Professor: ' + selectedProfessor.id"></app-title>
+    </div>
+    <div class="col text-end mt-2">
+      <button class="btn btn-warning" (click)="unselectProfessor()">Voltar</button>
+    </div>
+  </div>
+
+  <form>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Nome</label>
+      <input type="text" value="{{ selectedProfessor.name }}" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Disiciplina</label>
+      <input type="text" value="{{ selectedProfessor.subject }}" class="form-control">
+    </div>
+  </form>
+</div>
+
+<div *ngIf="!selectedProfessor">
+  <app-title [title]="title"></app-title>
+
+  <table class="table table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Visualizar</th>
+        <th scope="col">#</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Disciplina</th>
+        <th scope="col">Opções</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let prof of professors">
+        <td>
+          <button (click)="selectProfessor(prof)" class="btn btn-sm btn-warning">
+            Detalhes
+          </button>
+        </td>
+        <th scope="row">{{ prof.id }}</th>
+        <td>{{ prof.name }}</td>
+        <td>{{ prof.subject }}</td>
+        <td>
+          <div class="btn-group">
+            <button (click)="openModal(template)" class="btn btn-sm btn-outline-primary">
+              Alunos
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #template>
+  <div class="modal-body">
+    TDB
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+      FECHAR
+    </button>
+  </div>
+</ng-template>
