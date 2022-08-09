@@ -1,0 +1,33 @@
+version: "3.4"
+
+services:
+  db:
+    container_name: smartschool-database
+    image: postgres
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "SmartSchool"
+    ports:
+      - "5432:5432"
+    networks:
+      - smartschool-net
+
+  api-dev:
+    container_name: smartschool-api
+    image: smartschool-api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db
+    networks:
+      - smartschool-net
+  
+networks:
+  smartschool-net:
+    driver: bridge
