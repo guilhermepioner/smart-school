@@ -1,27 +1,33 @@
 <div *ngIf="selectedProfessor">
-  <div class="row">
-    <div class="col">
-      <app-title [title]="'Professor: ' + selectedProfessor.id"></app-title>
-    </div>
-    <div class="col text-end mt-2">
-      <button class="btn btn-warning" (click)="unselectProfessor()">Voltar</button>
-    </div>
-  </div>
+  <app-title [title]="(selectedProfessor.id <= 0 ? 'Novo Professor' : 'Código do Professor: ' + selectedProfessor.id)">
+    <button class="btn btn-warning" (click)="unselectProfessor()">
+      Voltar
+    </button>
+  </app-title>
 
-  <form>
+  <form [formGroup]="professorForm" (submit)="submit()">
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Nome</label>
-      <input type="text" value="{{ selectedProfessor.name }}" class="form-control">
+      <input type="text" formControlName="name" class="form-control">
     </div>
-    <div class="mb-3">
+    <!-- <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Disiciplina</label>
       <input type="text" value="{{ selectedProfessor.subject }}" class="form-control">
+    </div> -->
+    <div class="mb-3">
+      <button class="btn btn-success" [disabled]="professorForm.invalid">
+        Salvar
+      </button>
     </div>
   </form>
 </div>
 
 <div *ngIf="!selectedProfessor">
-  <app-title [title]="title"></app-title>
+  <app-title [title]="title">
+    <button class="btn btn-success" (click)="createProfessor()">
+      Cadastrar Professor
+    </button>
+  </app-title>
 
   <table class="table table-hover">
     <thead class="table-dark">

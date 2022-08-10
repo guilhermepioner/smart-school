@@ -6,6 +6,6 @@ export class Professor {
   constructor() {
     this.id = 0;
     this.name = '';
-    this.subject = '';
+    // this.subject = '';
   }
 }

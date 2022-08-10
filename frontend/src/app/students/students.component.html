@@ -1,16 +1,12 @@
 <div class="row">
 
   <div class="col-sm-6" *ngIf="selectedStudent">
-    <div class="row">
-      <div class="col">
-        <app-title [title]="'Código do Aluno: ' + selectedStudent.id"></app-title>
-      </div>
-      <div class="col text-end mt-2">
-        <button (click)="unselectStudent()" class="btn btn-outline-danger">
-          Fechar
-        </button>
-      </div>
-    </div>
+    <app-title [title]="(selectedStudent.id <= 0 ? 'Novo Aluno' : 'Código do Aluno: ' + selectedStudent.id)">
+      <button (click)="unselectStudent()" class="btn btn-outline-danger">
+        Fechar
+      </button>
+    </app-title>
+
     <form [formGroup]="studentForm" (submit)="submit()">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Nome</label>
@@ -26,14 +22,19 @@
       </div>
       <div class="mb-3">
         <button class="btn btn-success" [disabled]="studentForm.invalid">
-          Enviar
+          Salvar
         </button>
       </div>
     </form>
   </div>
 
   <div [ngClass]="{ 'col-sm-12': !selectedStudent, 'col-sm-6': selectedStudent }">
-    <app-title [title]="title"></app-title>
+    <app-title [title]="title">
+      <button (click)="createStudent()" class="btn btn-success">
+        Cadastrar Aluno
+      </button>
+    </app-title>
+
     <table class="table table-hover">
       <thead class="table-dark">
         <tr>
@@ -61,8 +62,8 @@
               <button (click)="openModal(template)" class="btn btn-sm btn-outline-primary">
                 Professores
               </button>
-              <button class="btn btn-sm btn-outline-danger">
-                Desativar
+              <button (click)="deleteStudent(student.id)" class="btn btn-sm btn-outline-danger">
+                Deletar
               </button>
             </div>
           </td>
@@ -72,7 +73,7 @@
   </div>
 
 </div>
- 
+
 <ng-template #template>
   <div class="modal-body">
     <app-professors></app-professors>

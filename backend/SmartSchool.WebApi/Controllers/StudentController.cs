@@ -132,7 +132,7 @@ public class StudentController : ControllerBase
             
             if (await _repository.SaveChangesAsync())
             {
-                return Ok("Estudante Excluído");
+                return Ok(new { Message = "Estudante Excluído" } );
             }
         }
         catch (Exception e)

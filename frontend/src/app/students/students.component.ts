@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Student } from '../models/student.model';
+import { StudentService } from '../services/student.service';
 
 @Component({
   selector: 'app-students',
@@ -12,23 +13,68 @@ export class StudentsComponent implements OnInit {
   public selectedStudent: Student | null = null;
   public studentForm!: FormGroup;
   public modalRef?: BsModalRef;
+  public reqType: 'put' | 'post' = 'post';
 
-  public students = [
-    { id: 1, name: 'Marta', lastname: 'Kent', phone: 332284255 },
-    { id: 2, name: 'Paula', lastname: 'Isabela', phone: 3325456455 },
-    { id: 3, name: 'Laura', lastname: 'Antonia', phone: 3322648945 },
-    { id: 4, name: 'Luiza', lastname: 'Maria', phone: 332245645 },
-    { id: 5, name: 'Lucas', lastname: 'Machado', phone: 3322485475 },
-    { id: 6, name: 'Pedro', lastname: 'Alvares', phone: 3487956655 },
-    { id: 7, name: 'Paulo', lastname: 'José', phone: 33225546785 },
-  ];
+  public students: Student[] = [];
 
-  constructor(private fb: FormBuilder,
-              private modalService: BsModalService) {
+  constructor(
+    private fb: FormBuilder,
+    private modalService: BsModalService,
+    private studentService: StudentService
+  ) {
     this.createForm(fb);
   }
 
   ngOnInit(): void {
+    this.loadStudents();
+  }
+
+  loadStudents() {
+    this.studentService
+      .getAll()
+      .subscribe({
+        next: (data: Student[]) => {
+          this.students = data;
+        },
+        error: (e: any) => {
+          console.error(e);
+        }
+      });
+  }
+
+  saveStudent(student: Student) {
+    (student.id == 0) ? this.reqType = 'post' : this.reqType = 'put';
+
+    this.studentService
+      [this.reqType](student)
+      .subscribe({
+        next: (result: Student) => {
+          console.log(result);
+          this.loadStudents();
+        },
+        error: (e: any) => {
+          console.error(e);
+        }
+      });
+  }
+
+  createStudent() {
+    this.selectedStudent = new Student();
+    this.studentForm.patchValue(this.selectedStudent);
+  }
+
+  deleteStudent(id: Number) {
+    this.studentService
+    .delete(id)
+    .subscribe({
+      next: (data: String) => {
+        console.log(data);
+        this.loadStudents();
+      },
+      error: (e: any) => {
+        console.error(e);
+      }
+    })
   }
 
   openModal(template: TemplateRef<any>) {
@@ -37,6 +83,7 @@ export class StudentsComponent implements OnInit {
 
   createForm(fb: FormBuilder) {
     this.studentForm = this.fb.group({
+      id: [''],
       name: ['', Validators.required],
       lastname: ['', Validators.required],
       phone: ['', Validators.required],
@@ -53,6 +100,6 @@ export class StudentsComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.studentForm.value);
+    this.saveStudent(this.studentForm.value);
   }
 }
